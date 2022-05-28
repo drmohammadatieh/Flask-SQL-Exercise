@@ -1,0 +1,153 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h3>Question 1</h3>
+  <p>List all drivers (number and name) who have a salary of less than 1800.</p>
+    <code>
+      SELECT * FROM BusDriver
+    </code> <hr>
+    
+<h3>Question 2</h3>
+  <p> List all bus drivers (number and name) whose name begins with J.</p>
+    <code >
+      SELECT * FROM BusDriver WHERE bdname LIKE 'J%'
+    </code><hr>
+
+<h3>Question 3</h3>
+  <p> List all bus drivers details for those drivers who have a salary between 2000 and 4000</p>
+    <code >
+      SELECT * FROM BusDriver WHERE bdsalary BETWEEN 2000 AND 4000
+    </code><hr>
+
+<h3>Question 4</h3>
+  <p>  List all buses (registration number and model) of type 2 which are not based at depot 101</p>
+    <code >
+      SELECT regno, model FROM Bus WHERE tno = '2' AND dno <> '101'
+    </code><hr>
+
+<h3>Question 5</h3>
+  <p> List buses (all details )which are either Volvo model s or Mercedes models.</p>
+    <code >
+      SELECT * FROM Bus WHERE model LIKE 'Mercedes%' OR model lIKE 'Volvo%'
+    </code><hr>
+
+<h3>Question 6</h3>
+  <p> List all depot numbers in the bus table</p>
+    <code >
+      SELECT DISTINCT(dno) FROM Bus
+    </code><hr>
+
+<h3>Question 7</h3>
+  <p>List all cleaners (number and name) with the name and address of their depot,
+     but only for those cleaners located at a depot</p>
+    <code >
+      SELECT cno, cname , dname,daddress FROM Cleaner INNER JOIN Depot on Cleaner.dno=Depot.dno WHERE Cleaner.dno IS NOT NULL
+    </code><hr>
+
+<h3>Question 8</h3>
+  <p> List bus drivers (number and name) and the bus types (description) for which each bus driver has had training.</p>
+    <code >
+      SELECT BusDriver.bdno, bdname, BusType.tdescript
+      FROM BusDriver INNER JOIN Training on BusDriver.bdno = Training.bdno
+      INNER JOIN BusType on BusType.tno=Training.tno ORDER BY BusDriver.bdno
+    </code><hr>
+
+<h3>Question 9</h3>
+  <p>  List all cleaners (number and name), the name of their depot and the bus registration 
+      with the type of bus that they are responsible for.</p>
+    <code >
+      SELECT  Cleaner.cno, cname, dname,regno,tdescript FROM 
+      INNER JOIN Depot on Cleaner.dno = Depot.dno
+      INNER JOIN Bus on Cleaner.cno = Bus.cno
+      INNER JOIN BusType on Bus.tno = BusType.tno
+    </code><hr>
+
+<h3>Question 10</h3>
+  <p> Rewrite question 7 as an OUTER JOIN</p>
+    <code >
+      SELECT  cno, cname, dname,daddress FROM Cleaner
+      LEFT OUTER JOIN Depot on Cleaner.dno = Depot.dno
+      WHERE dname IS NOT NULL
+    </code> <hr>
+
+<h3>Question 11</h3>
+  <p> Find route information (route number and description) for all routes
+      which connect to the Holloway Depot</p>
+    <code >
+      SELECT rno,rdescript FROM Route WHERE Route.dno in
+      (SELECT dno FROM Depot WHERE dname = 'Holloway')    
+    </code> <hr>
+
+<h3>Question 12</h3>
+  <p> List each depot name and the average salary for drivers working at the depot.</p>
+    <code >
+      SELECT dname, AVG(bdsalary) FROM BusDriver
+      INNER JOIN Depot on BusDriver.dno = Depot.dno GROUP BY dname
+    </code><hr>
+
+<h3>Question 13</h3>
+  <p> List each depot by name and count the number of bus drivers
+      who are assigned to each, for depots with more than one driver.</p>
+    <code >
+      SELECT dname, COUNT(bdno) as drivers_no FROM BusDriver
+      INNER JOIN Depot on BusDriver.dno = Depot.dno GROUP BY dname HAVING drivers_no > 1
+    </code><hr>
+
+<h3>Question 14</h3>
+  <p> For each cleaner responsible for buses of bus type double decker or minibus,
+      list his/her name and number and find the total number for which each cleaner is responsible.</p>
+    <code >
+      SELECT cname, Cleaner.cno, COUNT(Cleaner.cno) FROM Cleaner
+      INNER JOIN Bus on Cleaner.cno = Bus.cno
+      INNER JOIN BusType on Bus.tno = BusType.tno
+      WHERE BusType.tdescript in ('double-decker','minibus')
+      GROUP BY Cleaner.cno
+    </code><hr> 
+
+<h3>Question 15</h3>
+<p> A. List all drivers (name and number) and their routes (number and description, order by driver number.
+    B. Now order by route description within driver number.</p>
+  <p>A:</p><br>
+  <code >
+   
+    SELECT bdname, BusDriver.bdno, rno, rdescript FROM BusDriver
+    Inner Join Route on BusDriver.dno = Route.dno
+    ORDER BY BusDriver.bdno
+  </code><hr> 
+
+  <p>A:</p><br>
+  <code >
+  SELECT bdname, BusDriver.bdno, rno, rdescript FROM BusDriver
+  Inner Join Route on BusDriver.dno = Route.dno
+  ORDER BY BusDriver.bdno, rdescript
+  </code><hr> 
+      
+<form action="" method="post">
+  <p>Write of Paste SQL Statement Here</p>
+  <input type="text" width="300" name="SQL Statement"> <br>
+  <input type="submit" value="Run Query"> <br>
+</form>
+
+    <table id="data" class="table table-striped">   
+      <thead>
+        <tr >
+          {% for header in headers %}
+          <th>{{header[0]}}</th>
+          {% endfor %}
+        </tr>
+      </thead>
+      <tbody>
+        {% for row in result %}
+        <tr>
+          {% for col in row %}
+          <td style="width:auto">
+            {{col}}
+          </td>
+          {% endfor %}
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    
+{% endblock %}
+

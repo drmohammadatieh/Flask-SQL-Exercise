@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+
+{% block content %}
+   <h2>SQL and Flask Exercise</h2>
+   <p>
+      This small project was done as a self training in Flask and SQL as part of the
+      CS PgCert program at the  University of Essex Online.
+      The database was downloaded from the files of the Advanced SQL exercise.
+   </p>
+   <p></p>
+   <p>
+      In the next page, there will be several questions along their solution in SQL language.
+      Each solution can be tried by copying the SQL statement and pasting it where indicated at
+      the bottom of the page, then running the query by clicking on "Run Query" button.
+   </p>
+   <p>You can download the database files here:<br>
+   <a href="/Database files/Bus_schema.sql" download>Bus_Depots Schema</a>
+   <a href="/Database files/Bus_Data.sql" download>Bus_Depots Data</a>
+   </p>
+   </h3>
+   <p><a href="{{url_for('bus_depots')}}">Bus Depots</a></p>
+{% endblock %}
+
